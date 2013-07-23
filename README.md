@@ -9,15 +9,19 @@ sitegraph-python
 ##Functions
 ###increment()
 Increments a statistic by the given amount
+
 	api.incremnet("identifier")
 
 ###decrement()
 Decrements a statistic by the given amount
+
 	api.decrement("identifier")	# Not specifying an amount assumes 1
+	
 	api.decrement("identifier", amount=10)
 
 ###create_event()
 Creates a new event in the Sitegraph system. 
+
     api.create_event("Event Description")
     
 
