@@ -15,7 +15,7 @@ class Api:
         "Initializes the API by specifying the API key"
         self.api_key = api_key
         
-    def increment(self, identifier, amount=0):
+    def increment(self, identifier, amount=1):
         "Increments a given statistic identified by `identifier`"
         data = {
             'authKey' : self.api_key,
@@ -23,8 +23,33 @@ class Api:
             'amount' : amount,
             'api_info' : API_LIB,
         }
+        response = self.make_request('increment', data)
+        return True
+    
+    def decrement(self, identifier, amount=1):
+        "Decrements a statistic by the given amount"
+        data = {
+            'authKey' : self.api_key,
+            'statistic' : identifier,
+            'amount' : amount,
+            'api_info' : API_LIB,
+        }
+        response = self.make_request('decrement', data)
+        return True
+    
+    def create_event(self, description):
+        "Creates a new Sitegraph event"
+        data = {
+            'authKey' : self.api_key,
+            'event' : description,
+            'api_info' : API_LIB,
+        }
+        response = self.make_request('event', data)
+        return True
+    
+    def make_request(self, url, data):
         data = urllib.urlencode(data)
-        url = "%sincrement/" % API_URL
+        url = "%s%s/" % (API_URL, url)
         
         request = urllib2.Request(url, data)
         response = urllib2.urlopen(request)
@@ -35,8 +60,5 @@ class Api:
         try:
             error_message = parsed['error']
             raise SitegraphException(error_message)
-        except:
-            pass    # Everything is good if there is no error
-    
-    def decrement(self, identifier, amount=0):
-        pass
+        except KeyError:
+            return parsed    # Everything is good if there is no error, so return the response
